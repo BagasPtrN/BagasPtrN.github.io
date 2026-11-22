@@ -112,6 +112,16 @@ def translate(text: str, sl: str = "bbc", tl: str = TARGET_LANG) -> str:
 
 
 def transcribe(audio_path, do_translate=True):
+    try:
+        return _transcribe(audio_path, do_translate)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise gr.Error(f"{type(e).__name__}: {e}")
+
+
+def _transcribe(audio_path, do_translate=True):
+    print(f"[req] {audio_path}", flush=True)
     if not audio_path:
         return "", ""
     t = time.time()

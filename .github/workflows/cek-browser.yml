@@ -2,6 +2,10 @@ name: Cek halaman di browser (WebKit & Chromium)
 
 on:
   workflow_dispatch:
+    inputs:
+      browsers:
+        description: 'JSON list'
+        default: '["webkit","chromium"]'
 
 jobs:
   cek:
@@ -9,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [webkit, chromium]
+        browser: ${{ fromJSON(inputs.browsers || '["webkit","chromium"]') }}
     steps:
       - uses: actions/setup-python@v5
         with: { python-version: "3.11" }
