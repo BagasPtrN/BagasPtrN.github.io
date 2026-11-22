@@ -1,0 +1,44 @@
+name: Cek status Space
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cek:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install "huggingface_hub<1.0" gradio_client numpy soundfile
+      - name: Tunggu Space jalan lalu tes /transcribe
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os, time, sys, numpy as np, soundfile as sf
+          from huggingface_hub import HfApi
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          repo = api.whoami()["name"] + "/batak-toba-asr"
+          for i in range(80):
+              rt = api.get_space_runtime(repo)
+              print(f"[{i*20:4d}s] stage={rt.stage} hardware={rt.hardware}", flush=True)
+              if rt.stage == "RUNNING":
+                  break
+              if rt.stage in ("BUILD_ERROR", "RUNTIME_ERROR", "CONFIG_ERROR", "NO_APP_FILE"):
+                  print("ERROR:", rt.raw.get("errorMessage"))
+                  sys.exit(1)
+              time.sleep(20)
+          else:
+              sys.exit("Space belum RUNNING setelah ~27 menit")
+          from gradio_client import Client, handle_file
+          sr = 16000
+          t = np.arange(sr * 2) / sr
+          sf.write("tes.wav", (0.3 * np.sin(2 * np.pi * 220 * t)).astype("float32"), sr)
+          c = Client(repo, hf_token=os.environ["HF_TOKEN"])
+          t0 = time.time()
+          print("hasil:", c.predict(handle_file("tes.wav"), True, api_name="/transcribe"),
+                f"({time.time()-t0:.1f}s)")
+          print("TES OK")
+          PY
