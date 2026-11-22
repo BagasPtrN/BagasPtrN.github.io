@@ -176,7 +176,7 @@ const store = {
   set(k, v) { try { localStorage.setItem("btc_" + k, JSON.stringify(v)); } catch {} },
 };
 const cfg = {
-  space: store.get("space", ""), token: store.get("token", ""),
+  space: store.get("space", "BagasPtr/batak-toba-asr"), token: store.get("token", ""),
   mode: store.get("mode", "both"), font: store.get("font", 44),
   translate: store.get("translate", true), thresh: store.get("thresh", 0.012),
   maxSec: store.get("maxSec", 8),
