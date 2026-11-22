@@ -1,0 +1,43 @@
+name: Cek halaman di browser (WebKit & Chromium)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cek:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [webkit, chromium]
+    steps:
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install playwright numpy soundfile && python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Buka halaman live, kirim file tes
+        run: |
+          python - <<'PY'
+          import numpy as np, soundfile as sf, time
+          from playwright.sync_api import sync_playwright
+          sr=48000; t=np.arange(sr*3)/sr
+          x=0.3*np.sin(2*np.pi*(150+50*np.sin(2*np.pi*3*t))*t)*(0.5+0.5*np.sin(2*np.pi*4*t))
+          x=np.concatenate([np.zeros(sr//2), x, np.zeros(sr)])
+          sf.write('tes.wav', x.astype('float32'), sr, subtype='PCM_16')
+          with sync_playwright() as p:
+              b=getattr(p,"${{ matrix.browser }}").launch()
+              pg=b.new_page()
+              pg.on("console", lambda m: print("CONSOLE", m.type, m.text[:500]))
+              pg.on("pageerror", lambda e: print("PAGEERROR", str(e)[:500]))
+              pg.on("requestfailed", lambda r: print("REQFAIL", r.url[:150], r.failure))
+              pg.goto("https://bagasptrn.github.io/batak-caption/?v=%d" % time.time())
+              time.sleep(8)
+              print("STATUS1", pg.inner_text("#statusText"))
+              pg.set_input_files("#fileIn", "tes.wav")
+              for i in range(40):
+                  time.sleep(3)
+                  lines=pg.eval_on_selector_all(".line", "els=>els.map(e=>e.className+' | '+e.innerText.replace(/\\n/g,' / '))")
+                  if lines and not any('pending' in l for l in lines): break
+              print("STATUS2", pg.inner_text("#statusText"))
+              print("LINES", lines)
+              b.close()
+          PY

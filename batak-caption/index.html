@@ -361,7 +361,8 @@ async function pump() {
       console.error(e);
       if (e && e.message === "no-space") { job.el.remove(); queue.length = 0; openSettings(true); break; }
       job.el.classList.remove("pending"); job.el.classList.add("err");
-      job.el.querySelector(".bt").textContent = "⚠︎ gagal memproses potongan ini";
+      const msg = (e && (e.message || e.title || e.detail)) || String(e);
+      job.el.querySelector(".bt").textContent = "⚠︎ gagal: " + String(msg).slice(0, 160);
       setStatus("Error dari server — dicoba lagi di potongan berikut", "err");
       client = null; clientKey = "";
     }
