@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teks Langsung · Batak Toba</title>
+<meta name="theme-color" content="#0f0d0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Teks Batak">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="description" content="Live caption kotbah berbahasa Batak Toba dengan terjemahan bahasa Indonesia.">
+<style>
+  :root{
+    --bg:#0f0d0c; --panel:#1a1715; --line:#2b2623; --text:#f4efe9; --muted:#a39a91;
+    --accent:#c8102e; --accent2:#e8b04a; --ok:#4caf7a; --font:44px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  body{display:flex;flex-direction:column}
+  /* ulos-inspired stripe */
+  .stripe{height:6px;background:repeating-linear-gradient(90deg,var(--accent) 0 28px,#111 28px 34px,var(--accent2) 34px 40px,#111 40px 46px)}
+  header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  header h1{font-size:17px;margin:0 auto 0 0;font-weight:650;letter-spacing:.2px}
+  header h1 small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+  button,select,input{font:inherit;color:inherit}
+  .btn{background:#2a2522;border:1px solid #3a332f;border-radius:10px;padding:9px 14px;cursor:pointer;font-size:14px}
+  .btn:hover{background:#342e2a}
+  .btn.primary{background:var(--accent);border-color:var(--accent);font-weight:650}
+  .btn.primary.on{background:#3a332f;border-color:#555}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);min-width:0}
+  .dot{width:10px;height:10px;border-radius:50%;background:#555;flex:none}
+  .dot.ok{background:var(--ok)} .dot.busy{background:var(--accent2);animation:pulse 1s infinite}
+  .dot.live{background:var(--accent);animation:pulse 1s infinite} .dot.err{background:#e5484d}
+  @keyframes pulse{50%{opacity:.35}}
+  .meter{width:90px;height:8px;border-radius:4px;background:#2a2522;overflow:hidden}
+  .meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .08s}
+
+  main{flex:1;min-height:0;display:flex;flex-direction:column}
+  #stage{flex:1;overflow-y:auto;padding:24px clamp(16px,5vw,72px) 40vh;scroll-behavior:smooth}
+  .empty{color:var(--muted);text-align:center;margin-top:12vh;font-size:18px;line-height:1.6}
+  .line{margin:0 0 .9em;opacity:.55;transition:opacity .3s}
+  .line:last-child,.line:nth-last-child(2){opacity:1}
+  .line .t{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .line .bt{font-size:calc(var(--font)*.55);color:var(--accent2);line-height:1.3}
+  .line .id{font-size:var(--font);line-height:1.25;font-weight:600}
+  .line.pending .bt::after{content:"…";animation:pulse 1s infinite}
+  .line.err .bt{color:#e5484d;font-size:15px}
+  #stage.mode-id .bt{display:none}
+  #stage.mode-bt .id{display:none}
+  #stage.mode-bt .bt,.line.noid .bt{font-size:var(--font);color:var(--text);font-weight:600}
+  .line.noid .id{display:none}
+  #stage.mode-id .line.noid .bt{display:block}
+  #stage.mode-id .line.pending .bt{display:block;font-size:15px;color:var(--muted)}
+
+
+  footer{display:flex;gap:16px;justify-content:space-between;align-items:center;padding:8px 16px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+  footer a{color:var(--muted)}
+
+  dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:16px;max-width:520px;width:calc(100% - 32px);padding:0}
+  dialog::backdrop{background:rgba(0,0,0,.6)}
+  dialog form{padding:20px;display:grid;gap:14px}
+  dialog h2{margin:0;font-size:18px}
+  label{display:grid;gap:6px;font-size:14px}
+  label .hint{font-size:12px;color:var(--muted)}
+  input[type=text],input[type=password],select{background:#0f0d0c;border:1px solid #3a332f;border-radius:8px;padding:9px 10px}
+  .row{display:flex;gap:10px;align-items:center}
+  .row label{flex:1}
+  .chk{display:flex;gap:8px;align-items:center;grid-template-columns:none}
+  .actions{display:flex;justify-content:flex-end;gap:8px}
+  .warn{background:#3a2a12;border:1px solid #6b4b16;color:#f3d79a;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45}
+  #btnExit{display:none;position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:6;opacity:.6}
+  body.focus header, body.focus footer, body.focus .stripe{display:none}
+  body.focus #btnExit{display:block}
+  body.focus #stage{padding-top:20vh;background:#000}
+  body.focus .line .t{display:none}
+  @media (max-width:640px){
+    :root{--font:30px}
+    header{padding:10px 12px calc(10px) 12px;gap:8px;padding-top:calc(10px + env(safe-area-inset-top))}
+    header h1{font-size:15px;flex:1 1 auto} header h1 small{display:none}
+    .status{order:5;flex:1 1 auto;font-size:12px}
+    .meter{order:6;width:70px}
+    .btn{padding:8px 11px}
+    .btn .lbl{display:none}
+    #btnStart{position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:5;
+      padding:16px;font-size:18px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+    #btnStart.on{background:#2a2522;border-color:#555}
+    footer{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+    footer .credit{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<header>
+  <h1>Teks Langsung · Batak Toba<small>Suara Batak → teks Batak → terjemahan Indonesia</small></h1>
+  <div class="status"><span id="dot" class="dot"></span><span id="statusText">Belum terhubung</span></div>
+  <div class="meter" title="Level mikrofon"><i id="meter"></i></div>
+  <button id="btnStart" class="btn primary">🎙️ Mulai</button>
+  <button id="btnFile" class="btn" title="Uji dengan file rekaman">📂<span class="lbl"> Uji file</span></button>
+  <button id="btnFull" class="btn" title="Layar penuh (untuk proyektor)">⛶</button>
+  <button id="btnDl" class="btn" title="Unduh transkrip">⬇︎</button>
+  <button id="btnSet" class="btn" title="Pengaturan">⚙︎</button>
+  <input id="fileIn" type="file" accept="audio/*,video/*" hidden>
+</header>
+
+<main>
+  <div id="stage" class="mode-both">
+    <div class="empty" id="empty">Tekan <b>Mulai</b> lalu izinkan mikrofon.<br>
+      Teks akan muncul per kalimat, jeda ±3–8 detik di belakang pembicara.</div>
+  </div>
+</main>
+
+<button id="btnExit" class="btn" title="Keluar mode fokus">✕</button>
+<footer>
+  <span id="lag">Antrean: 0</span>
+  <span class="credit">Model: <a href="https://huggingface.co/facebook/mms-1b-all" target="_blank" rel="noopener">Meta MMS</a> (CC-BY-NC) · Terjemahan otomatis, bisa keliru</span>
+</footer>
+
+<dialog id="dlg">
+  <form method="dialog">
+    <h2>Pengaturan</h2>
+    <div class="warn" id="needSpace" hidden>Isi dulu alamat server (Hugging Face Space) yang menjalankan pengenal suara.</div>
+    <label>Server (Hugging Face Space)
+      <input id="cfgSpace" type="text" placeholder="namamu/batak-toba-asr" autocomplete="off" spellcheck="false">
+      <span class="hint">Bisa juga lewat link: <code>?space=namamu/batak-toba-asr</code></span>
+    </label>
+    <label>Token HF (opsional, hanya untuk Space privat)
+      <input id="cfgToken" type="password" placeholder="hf_…" autocomplete="off">
+      <span class="hint">Disimpan hanya di browser ini.</span>
+    </label>
+    <div class="row">
+      <label>Tampilkan
+        <select id="cfgMode">
+          <option value="both">Batak + Indonesia</option>
+          <option value="id">Indonesia saja</option>
+          <option value="bt">Batak saja</option>
+        </select>
+      </label>
+      <label>Ukuran huruf <input id="cfgFont" type="range" min="20" max="96" step="2"></label>
+    </div>
+    <label class="chk"><input id="cfgTr" type="checkbox"> Terjemahkan ke bahasa Indonesia</label>
+    <div class="row">
+      <label>Kepekaan mic
+        <input id="cfgThresh" type="range" min="0.003" max="0.06" step="0.001">
+        <span class="hint">Geser kanan kalau ruangan bising</span>
+      </label>
+      <label>Potongan maks. (detik)
+        <select id="cfgMax"><option>5</option><option>6</option><option>8</option><option>10</option><option>12</option></select>
+        <span class="hint">Lebih pendek = lebih cepat tampil</span>
+      </label>
+    </div>
+    <div class="actions">
+      <button class="btn" value="cancel" id="btnClear" type="button">Hapus teks</button>
+      <button class="btn primary" value="ok">Simpan</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module">
+/* library Gradio dimuat saat dibutuhkan, supaya tombol tetap jalan walau sinyal lemah */
+const GRADIO_URL = "https://cdn.jsdelivr.net/npm/@gradio/client@1.14.2/dist/index.min.js";
+let gradio = null;
+async function lib() { return gradio || (gradio = await import(GRADIO_URL).catch((e) => { gradio = null; throw e; })); }
+
+const $ = (id) => document.getElementById(id);
+
+/* ---------- pengaturan (disimpan di browser) ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("btc_" + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("btc_" + k, JSON.stringify(v)); } catch {} },
+};
+const cfg = {
+  space: store.get("space", ""), token: store.get("token", ""),
+  mode: store.get("mode", "both"), font: store.get("font", 44),
+  translate: store.get("translate", true), thresh: store.get("thresh", 0.012),
+  maxSec: store.get("maxSec", 8),
+};
+const urlSpace = new URLSearchParams(location.search).get("space");
+if (urlSpace) { cfg.space = urlSpace.trim(); store.set("space", cfg.space); }
+
+function applyCfg() {
+  $("stage").className = "mode-" + cfg.mode;
+  document.documentElement.style.setProperty("--font", cfg.font + "px");
+}
+applyCfg();
+
+function openSettings(needSpace = false) {
+  $("needSpace").hidden = !needSpace;
+  $("cfgSpace").value = cfg.space; $("cfgToken").value = cfg.token;
+  $("cfgMode").value = cfg.mode; $("cfgFont").value = cfg.font;
+  $("cfgTr").checked = cfg.translate; $("cfgThresh").value = cfg.thresh;
+  $("cfgMax").value = String(cfg.maxSec);
+  $("dlg").showModal();
+}
+$("cfgFont").oninput = (e) => document.documentElement.style.setProperty("--font", e.target.value + "px");
+$("cfgMode").onchange = (e) => ($("stage").className = "mode-" + e.target.value);
+$("dlg").addEventListener("close", () => {
+  if ($("dlg").returnValue !== "ok") { applyCfg(); return; }
+  cfg.space = $("cfgSpace").value.trim(); cfg.token = $("cfgToken").value.trim();
+  cfg.mode = $("cfgMode").value; cfg.font = +$("cfgFont").value;
+  cfg.translate = $("cfgTr").checked; cfg.thresh = +$("cfgThresh").value;
+  cfg.maxSec = +$("cfgMax").value;
+  for (const k in cfg) store.set(k, cfg[k]);
+  applyCfg();
+  connect().catch(() => {});
+});
+$("btnSet").onclick = () => openSettings();
+$("btnClear").onclick = () => { transcript.length = 0; $("stage").querySelectorAll(".line").forEach((n) => n.remove()); $("empty").hidden = false; $("dlg").close("cancel"); };
+
+/* ---------- status ---------- */
+function setStatus(text, kind = "") { $("statusText").textContent = text; $("dot").className = "dot " + kind; }
+
+/* ---------- koneksi ke Space ---------- */
+let client = null, clientKey = "", connecting = null;
+async function connect() {
+  if (!cfg.space) throw new Error("no-space");
+  const key = cfg.space + "|" + cfg.token;
+  if (client && clientKey === key) return client;
+  if (connecting && clientKey === key) return connecting;
+  clientKey = key;
+  setStatus("Menghubungkan… (server tidur bisa butuh 1–3 menit)", "busy");
+  const opts = cfg.token ? { hf_token: cfg.token } : {};
+  connecting = lib().then(({ Client }) => Client.connect(cfg.space, opts))
+    .then((c) => { client = c; setStatus(running ? "Mendengarkan" : "Siap", running ? "live" : "ok"); return c; })
+    .catch((e) => { client = null; clientKey = ""; setStatus("Gagal terhubung ke server", "err"); console.error(e); throw e; })
+    .finally(() => { connecting = null; });
+  return connecting;
+}
+
+/* ---------- utilitas audio ---------- */
+const TARGET_SR = 16000;
+
+function resample(input, fromRate, toRate = TARGET_SR) {
+  if (fromRate === toRate) return input;
+  const ratio = fromRate / toRate, n = Math.floor(input.length / ratio), out = new Float32Array(n);
+  for (let i = 0; i < n; i++) {           // rata-rata jendela = low-pass sederhana
+    const a = Math.floor(i * ratio), b = Math.min(input.length, Math.floor((i + 1) * ratio));
+    let s = 0; for (let j = a; j < b; j++) s += input[j];
+    out[i] = b > a ? s / (b - a) : input[a] || 0;
+  }
+  return out;
+}
+
+function encodeWav(samples, rate = TARGET_SR) {
+  const buf = new ArrayBuffer(44 + samples.length * 2), v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, "RIFF"); v.setUint32(4, 36 + samples.length * 2, true); w(8, "WAVE"); w(12, "fmt ");
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  w(36, "data"); v.setUint32(40, samples.length * 2, true);
+  for (let i = 0, o = 44; i < samples.length; i++, o += 2) {
+    const x = Math.max(-1, Math.min(1, samples[i])); v.setInt16(o, x < 0 ? x * 0x8000 : x * 0x7fff, true);
+  }
+  return new Blob([buf], { type: "audio/wav" });
+}
+
+function concat(frames, len) {
+  const out = new Float32Array(len); let o = 0;
+  for (const f of frames) { out.set(f, o); o += f.length; }
+  return out;
+}
+
+/* Pemotong ucapan: memotong di jeda bicara supaya kata tidak terbelah. */
+class Segmenter {
+  constructor(onChunk, opts) { this.onChunk = onChunk; this.opts = opts; this.rate = 48000; this.pre = []; this.preLen = 0; this.reset(); }
+  reset() { this.active = false; this.frames = []; this.rms = []; this.len = 0; this.silence = 0; this.voiced = 0; }
+  push(frame, rate) {
+    this.rate = rate;
+    let s = 0; for (let i = 0; i < frame.length; i++) s += frame[i] * frame[i];
+    const rms = Math.sqrt(s / frame.length), loud = rms > this.opts().thresh;
+    if (!this.active) {                         // tunggu suara, simpan 0,3 dtk sebelumnya
+      this.pre.push([frame, rms]); this.preLen += frame.length;
+      while (this.preLen - this.pre[0][0].length > rate * 0.3) this.preLen -= this.pre.shift()[0].length;
+      if (!loud) return rms;
+      this.active = true;
+      for (const [f, r] of this.pre) { this.frames.push(f); this.rms.push(r); this.len += f.length; }
+      this.pre = []; this.preLen = 0; this.voiced = frame.length;
+      return rms;
+    }
+    this.frames.push(frame); this.rms.push(rms); this.len += frame.length;
+    if (loud) { this.voiced += frame.length; this.silence = 0; } else this.silence += frame.length;
+    const sec = this.len / rate, sil = this.silence / rate, max = this.opts().maxSec;
+    if ((sec >= 2.5 && sil >= 0.35) || sil >= 0.9) this.flush();
+    else if (sec >= max) this.splitAtQuietest();
+    return rms;
+  }
+  splitAtQuietest() {                           // potong di titik paling sunyi pada 2 dtk terakhir
+    const fl = this.frames[0].length, look = Math.min(this.frames.length - 1, Math.round(2 * this.rate / fl));
+    let best = this.frames.length - 1, bestR = Infinity;
+    for (let i = this.frames.length - 1; i >= this.frames.length - look; i--) if (this.rms[i] < bestR) { bestR = this.rms[i]; best = i; }
+    const keepF = this.frames.splice(best + 1), keepR = this.rms.splice(best + 1);
+    this.len = this.frames.reduce((a, f) => a + f.length, 0);
+    this.flush(true);
+    if (keepF.length) {
+      this.active = true; this.frames = keepF; this.rms = keepR;
+      this.len = keepF.reduce((a, f) => a + f.length, 0); this.voiced = this.len;
+    }
+  }
+  flush(force = false) {
+    if (this.len && (force || this.voiced / this.rate >= 0.3)) this.onChunk(concat(this.frames, this.len), this.rate);
+    this.reset();
+  }
+}
+
+/* ---------- antrean transkripsi ---------- */
+const transcript = [];
+const queue = [];
+let busy = false;
+
+function fmtTime(d) { return d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }); }
+
+function addLine(time) {
+  $("empty").hidden = true;
+  const el = document.createElement("div");
+  el.className = "line pending latest";
+  el.innerHTML = '<div class="t"></div><div class="bt"></div><div class="id"></div>';
+  el.querySelector(".t").textContent = fmtTime(time);
+  $("stage").querySelectorAll(".line.latest").forEach((n) => n.classList.remove("latest"));
+  $("stage").appendChild(el);
+  const lines = $("stage").querySelectorAll(".line");
+  if (lines.length > 300) lines[0].remove();
+  scrollDown();
+  return el;
+}
+function scrollDown() { const s = $("stage"); s.scrollTop = s.scrollHeight; }
+function updateLag() {
+  const n = queue.length + (busy ? 1 : 0);
+  $("lag").textContent = "Antrean: " + n + (n > 3 ? " — server tertinggal, coba perkecil potongan maks." : "");
+}
+
+function enqueue(samples, rate, time = new Date()) {
+  const pcm = resample(samples, rate);
+  const job = { blob: encodeWav(pcm), time, el: addLine(time) };
+  queue.push(job); updateLag(); pump();
+}
+
+async function pump() {
+  if (busy) return;
+  busy = true;
+  while (queue.length) {
+    const job = queue.shift(); updateLag();
+    try {
+      const c = await connect();
+      const { handle_file } = await lib();
+      const res = await c.predict("/transcribe", [handle_file(job.blob), cfg.translate]);
+      const [bt, id] = res.data || ["", ""];
+      if (!bt) { job.el.remove(); continue; }
+      job.el.classList.remove("pending");
+      job.el.querySelector(".bt").textContent = bt;
+      job.el.querySelector(".id").textContent = id || "";
+      if (!id) job.el.classList.add("noid");
+      transcript.push({ time: job.time, bt, id: id || "" });
+      if (running) setStatus("Mendengarkan", "live");
+    } catch (e) {
+      console.error(e);
+      if (e && e.message === "no-space") { job.el.remove(); queue.length = 0; openSettings(true); break; }
+      job.el.classList.remove("pending"); job.el.classList.add("err");
+      job.el.querySelector(".bt").textContent = "⚠︎ gagal memproses potongan ini";
+      setStatus("Error dari server — dicoba lagi di potongan berikut", "err");
+      client = null; clientKey = "";
+    }
+    scrollDown();
+  }
+  busy = false; updateLag();
+}
+
+/* ---------- mikrofon ---------- */
+let running = false, ctx = null, stream = null, wakeLock = null, seg = null;
+const WORKLET = `class Tap extends AudioWorkletProcessor{process(i){const c=i[0];if(c&&c[0])this.port.postMessage(c[0].slice(0));return true}}registerProcessor("tap",Tap);`;
+
+async function start() {
+  if (!cfg.space) { openSettings(true); return; }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: true, autoGainControl: true } });
+  } catch (e) { setStatus("Izin mikrofon ditolak", "err"); return; }
+  ctx = new AudioContext();
+  await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([WORKLET], { type: "application/javascript" })));
+  const src = ctx.createMediaStreamSource(stream);
+  const tap = new AudioWorkletNode(ctx, "tap");
+  const mute = ctx.createGain(); mute.gain.value = 0;
+  src.connect(tap); tap.connect(mute); mute.connect(ctx.destination);
+  seg = new Segmenter((s, r) => enqueue(s, r), () => cfg);
+  tap.port.onmessage = (e) => {
+    const rms = seg.push(e.data, ctx.sampleRate);
+    $("meter").style.width = Math.min(100, (rms / (cfg.thresh * 4)) * 100) + "%";
+    $("meter").style.background = rms > cfg.thresh ? "var(--ok)" : "#6b625b";
+  };
+  running = true;
+  $("btnStart").textContent = "⏹ Berhenti"; $("btnStart").classList.add("on");
+  setStatus("Mendengarkan", "live");
+  try { wakeLock = await navigator.wakeLock?.request("screen"); } catch {}
+  connect().catch(() => {});
+}
+
+function stop() {
+  running = false;
+  seg?.flush();
+  stream?.getTracks().forEach((t) => t.stop());
+  ctx?.close(); ctx = null; stream = null;
+  wakeLock?.release?.(); wakeLock = null;
+  $("meter").style.width = "0";
+  $("btnStart").textContent = "🎙️ Mulai"; $("btnStart").classList.remove("on");
+  setStatus(client ? "Siap" : "Berhenti", client ? "ok" : "");
+}
+$("btnStart").onclick = () => (running ? stop() : start());
+document.addEventListener("visibilitychange", async () => {
+  if (running && document.visibilityState === "hidden") setStatus("⚠︎ Jangan kunci layar / pindah aplikasi — mic bisa berhenti", "err");
+  if (running && document.visibilityState === "visible" && !wakeLock) { try { wakeLock = await navigator.wakeLock?.request("screen"); } catch {} }
+});
+
+/* ---------- uji dengan file rekaman ---------- */
+$("btnFile").onclick = () => { if (!cfg.space) return openSettings(true); $("fileIn").click(); };
+$("fileIn").onchange = async (e) => {
+  const file = e.target.files[0]; e.target.value = "";
+  if (!file) return;
+  setStatus("Membaca file…", "busy");
+  try {
+    const ac = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, 1, TARGET_SR);
+    const buf = await ac.decodeAudioData(await file.arrayBuffer());
+    let mono = buf.getChannelData(0);
+    if (buf.numberOfChannels > 1) {
+      mono = new Float32Array(mono);
+      for (let c = 1; c < buf.numberOfChannels; c++) { const d = buf.getChannelData(c); for (let i = 0; i < mono.length; i++) mono[i] += d[i]; }
+      for (let i = 0; i < mono.length; i++) mono[i] /= buf.numberOfChannels;
+    }
+    const pcm = resample(mono, buf.sampleRate);
+    const t0 = Date.now(), FR = 512;
+    let chunks = 0;
+    const fseg = new Segmenter((s, r) => { chunks++; enqueue(s, r, new Date(t0 + offset / TARGET_SR * 1000)); }, () => cfg);
+    let offset = 0;
+    for (; offset < pcm.length; offset += FR) fseg.push(pcm.subarray(offset, Math.min(pcm.length, offset + FR)), TARGET_SR);
+    fseg.flush();
+    setStatus(`File dipotong jadi ${chunks} bagian, sedang diproses…`, "busy");
+  } catch (err) {
+    console.error(err); setStatus("File tidak bisa dibaca (coba MP3/WAV/M4A)", "err");
+  }
+};
+
+/* ---------- layar penuh & unduh ---------- */
+/* layar penuh: Android/desktop pakai Fullscreen API; iPhone (tidak didukung) pakai mode fokus */
+$("btnFull").onclick = () => {
+  if (document.fullscreenElement) { document.exitFullscreen(); return; }
+  document.body.classList.add("focus"); scrollDown();
+  document.documentElement.requestFullscreen?.().catch(() => {});
+};
+$("btnExit").onclick = () => { document.body.classList.remove("focus"); if (document.fullscreenElement) document.exitFullscreen(); };
+document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) document.body.classList.remove("focus"); });
+$("btnDl").onclick = () => {
+  if (!transcript.length) return;
+  const txt = transcript.map((l) => `[${fmtTime(l.time)}]\nBT: ${l.bt}` + (l.id ? `\nID: ${l.id}` : "")).join("\n\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([txt], { type: "text/plain;charset=utf-8" }));
+  a.download = "transkrip-batak-" + new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-") + ".txt";
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+
+/* ---------- mulai ---------- */
+if (cfg.space) connect().catch(() => {}); else setStatus("Atur server dulu (⚙︎)");
+</script>
+</body>
+</html>
