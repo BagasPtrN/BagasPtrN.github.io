@@ -4,3 +4,4 @@ huggingface_hub<1.0
 soundfile
 numpy
 requests
+pydantic==2.10.6
