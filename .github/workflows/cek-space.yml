@@ -36,7 +36,7 @@ jobs:
           sr = 16000
           t = np.arange(sr * 2) / sr
           sf.write("tes.wav", (0.3 * np.sin(2 * np.pi * 220 * t)).astype("float32"), sr)
-          c = Client(repo, hf_token=os.environ["HF_TOKEN"])
+          c = Client(repo, token=os.environ["HF_TOKEN"])
           t0 = time.time()
           print("hasil:", c.predict(handle_file("tes.wav"), True, api_name="/transcribe"),
                 f"({time.time()-t0:.1f}s)")
