@@ -25,7 +25,19 @@ jobs:
           python -c "
           from gradio_client import Client, handle_file
           c=Client('BagasPtr/batak-toba-asr')
-          print('PY_HASIL', c.predict(handle_file('tes.wav'), True, api_name='/transcribe'))"
+          try: print('PY_HASIL', c.predict(handle_file('tes.wav'), True, api_name='/transcribe'))
+          except Exception as e: print('PY_ERROR', type(e).__name__, e)"
+      - name: Python DENGAN token
+        continue-on-error: true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python -c "
+          import os
+          from gradio_client import Client, handle_file
+          c=Client('BagasPtr/batak-toba-asr', token=os.environ['HF_TOKEN'])
+          try: print('PYTOK_HASIL', c.predict(handle_file('tes.wav'), True, api_name='/transcribe'))
+          except Exception as e: print('PYTOK_ERROR', type(e).__name__, e)"
       - name: JavaScript tanpa token (library yang sama dengan halaman)
         continue-on-error: true
         run: |
