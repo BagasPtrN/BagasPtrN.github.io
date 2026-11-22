@@ -173,6 +173,26 @@ function spaceUrl(s) {
 }
 function authHeaders() { return cfg.token ? { Authorization: "Bearer " + cfg.token } : {}; }
 
+/* Terjemahan dilakukan dari HP (IP pribadi), karena Google membatasi IP server Hugging Face (429). */
+const trCache = new Map();
+async function translateText(text, sl = "bbc", tl = "id") {
+  if (!text) return "";
+  if (trCache.has(text)) return trCache.get(text);
+  const url = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" + sl + "&tl=" + tl + "&q=" + encodeURIComponent(text);
+  for (let i = 0; i < 2; i++) {
+    try {
+      const r = await fetch(url, { credentials: "omit" });
+      if (r.ok) {
+        const d = await r.json();
+        const out = (d[0] || []).map((s) => (s && s[0]) || "").join("").trim();
+        trCache.set(text, out); return out;
+      }
+    } catch (e) { console.warn("translate", e); }
+    await new Promise((ok) => setTimeout(ok, 800));
+  }
+  return "";
+}
+
 class SpaceClient {
   constructor(base) { this.base = base; }
   async ping() {
@@ -388,7 +408,8 @@ async function pump() {
     const job = queue.shift(); updateLag();
     try {
       const c = await connect();
-      const [bt, id] = await c.transcribe(job.blob, cfg.translate);
+      const [bt, idSrv] = await c.transcribe(job.blob, false);   // server cukup transkripsi
+      const id = idSrv || (cfg.translate && bt ? await translateText(bt) : "");
       if (!bt) { job.el.remove(); continue; }
       job.el.classList.remove("pending");
       job.el.querySelector(".bt").textContent = bt;

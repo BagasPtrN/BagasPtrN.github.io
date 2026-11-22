@@ -1,0 +1,29 @@
+name: Cek terjemahan dari browser (tanpa GPU)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cek:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [webkit, chromium]
+    steps:
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install playwright && python -m playwright install --with-deps ${{ matrix.browser }}
+      - run: |
+          python - <<'PY'
+          import time
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as p:
+              b = getattr(p, "${{ matrix.browser }}").launch(); pg = b.new_page()
+              pg.goto("https://bagasptrn.github.io/batak-caption/?v=%d" % time.time()); time.sleep(3)
+              r = pg.evaluate("""async () => {
+                const u = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=bbc&tl=id&q=" + encodeURIComponent("di mula-mula ditompa Debata langit dohot tano");
+                try { const x = await fetch(u, {credentials:"omit"}); const d = await x.json(); return x.status + " " + d[0].map(s=>s[0]).join(""); }
+                catch (e) { return "ERR " + e; } }""")
+              print("TR_RESULT", r); b.close()
+          PY
