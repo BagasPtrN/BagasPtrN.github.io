@@ -106,7 +106,7 @@
   <button id="btnFull" class="btn" title="Layar penuh (untuk proyektor)">⛶</button>
   <button id="btnDl" class="btn" title="Unduh transkrip">⬇︎</button>
   <button id="btnSet" class="btn" title="Pengaturan">⚙︎</button>
-  <input id="fileIn" type="file" accept="audio/*,video/*" hidden>
+  <input id="fileIn" type="file" accept="audio/*,video/*,.m4a,.mp4,.aac,.mp3,.wav,.caf,.ogg,.opus,.webm,.flac" hidden>
 </header>
 
 <main>
@@ -456,13 +456,30 @@ document.addEventListener("visibilitychange", async () => {
 
 /* ---------- uji dengan file rekaman ---------- */
 $("btnFile").onclick = () => { if (!cfg.space) return openSettings(true); $("fileIn").click(); };
+/* Decode file audio (M4A/AAC dari iPhone, MP3, WAV, video MP4, dll.).
+   Coba 16 kHz dulu (hemat memori); kalau browser menolak, pakai 44,1 kHz lalu resample. */
+function decodeWith(rate, data) {
+  const AC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  const ac = new AC(1, 1, rate);
+  return new Promise((ok, fail) => {
+    const p = ac.decodeAudioData(data, ok, fail);   // Safari lama: callback
+    if (p && p.then) p.then(ok, fail);
+  });
+}
+async function decodeFile(file) {
+  const bytes = await file.arrayBuffer();
+  try { return await decodeWith(TARGET_SR, bytes.slice(0)); }
+  catch (e1) { console.warn("decode 16k gagal, coba 44.1k", e1); return await decodeWith(44100, bytes); }
+}
+function fmtDur(sec) { const m = Math.floor(sec / 60), s = Math.round(sec % 60); return `${m}:${String(s).padStart(2, "0")}`; }
+
 $("fileIn").onchange = async (e) => {
   const file = e.target.files[0]; e.target.value = "";
   if (!file) return;
-  setStatus("Membaca file…", "busy");
+  const mb = (file.size / 1048576).toFixed(1);
+  setStatus(`Membaca ${file.name} (${mb} MB)…`, "busy");
   try {
-    const ac = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, 1, TARGET_SR);
-    const buf = await ac.decodeAudioData(await file.arrayBuffer());
+    const buf = await decodeFile(file);
     let mono = buf.getChannelData(0);
     if (buf.numberOfChannels > 1) {
       mono = new Float32Array(mono);
@@ -470,15 +487,17 @@ $("fileIn").onchange = async (e) => {
       for (let i = 0; i < mono.length; i++) mono[i] /= buf.numberOfChannels;
     }
     const pcm = resample(mono, buf.sampleRate);
-    const t0 = Date.now(), FR = 512;
-    let chunks = 0;
-    const fseg = new Segmenter((s, r) => { chunks++; enqueue(s, r, new Date(t0 + offset / TARGET_SR * 1000)); }, () => cfg);
-    let offset = 0;
+    // cap waktu ditampilkan relatif terhadap awal rekaman (00.00.00, 00.00.08, …)
+    const t0 = new Date(2000, 0, 1, 0, 0, 0).getTime(), FR = 512;
+    let chunks = 0, offset = 0;
+    const fseg = new Segmenter((s, r) => { chunks++; enqueue(s, r, new Date(t0 + (offset / TARGET_SR - s.length / r) * 1000)); }, () => cfg);
     for (; offset < pcm.length; offset += FR) fseg.push(pcm.subarray(offset, Math.min(pcm.length, offset + FR)), TARGET_SR);
     fseg.flush();
-    setStatus(`File dipotong jadi ${chunks} bagian, sedang diproses…`, "busy");
+    const note = buf.duration > 20 * 60 ? " — rekaman panjang, bisa lama & menghabiskan jatah GPU" : "";
+    setStatus(`${file.name}: ${fmtDur(buf.duration)}, ${chunks} potongan diproses…${note}`, "busy");
   } catch (err) {
-    console.error(err); setStatus("File tidak bisa dibaca (coba MP3/WAV/M4A)", "err");
+    console.error(err);
+    setStatus("File tidak bisa dibaca. Kalau rekaman sangat panjang, potong dulu jadi ≤ 20 menit.", "err");
   }
 };
 

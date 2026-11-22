@@ -1,0 +1,39 @@
+name: Cek baca file M4A (tanpa panggil server)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cek:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [webkit, chromium]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: pip install playwright && python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Buat M4A (AAC stereo 48 kHz, seperti Memo Suara iPhone) lalu buka di halaman
+        run: |
+          ffmpeg -loglevel error -y -f lavfi -i "sine=frequency=220:duration=30" -af "volume='if(lt(mod(t,10),7),1,0.001)':eval=frame" -ac 2 -ar 48000 -c:a aac -b:a 64k tes.m4a
+          python - <<'PY'
+          import os, time
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as p:
+              b = getattr(p, "${{ matrix.browser }}").launch()
+              pg = b.new_page()
+              pg.route("**/*hf.space/**", lambda r: r.abort())   # jangan pakai jatah GPU
+              pg.on("console", lambda m: print("CONSOLE", m.type, m.text[:300]))
+              pg.goto("file://" + os.path.abspath("batak-caption/index.html"))
+              time.sleep(1)
+              pg.evaluate("""() => { const s=document.getElementById('statusText'); window.__st=[];
+                new MutationObserver(()=>window.__st.push(s.textContent)).observe(s,{childList:true,characterData:true,subtree:true}); }""")
+              pg.set_input_files("#fileIn", "tes.m4a")
+              time.sleep(6)
+              print("STATUS_HISTORY", pg.evaluate("window.__st"))
+              print("LINES", pg.eval_on_selector_all(".line .t", "els=>els.map(e=>e.textContent)"))
+              b.close()
+          PY
