@@ -1,0 +1,45 @@
+name: Cek Space tanpa token (seperti HP)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cek:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: pip install gradio_client numpy soundfile && npm i @gradio/client@1.14.2
+      - name: Buat audio tes (suara bicara sintetis 3 dtk)
+        run: |
+          python -c "
+          import numpy as np, soundfile as sf
+          sr=16000; t=np.arange(sr*3)/sr
+          x=0.3*np.sin(2*np.pi*(150+50*np.sin(2*np.pi*3*t))*t)*(0.5+0.5*np.sin(2*np.pi*4*t))
+          sf.write('tes.wav', x.astype('float32'), sr)"
+      - name: Python tanpa token
+        continue-on-error: true
+        run: |
+          python -c "
+          from gradio_client import Client, handle_file
+          c=Client('BagasPtr/batak-toba-asr')
+          print('PY_HASIL', c.predict(handle_file('tes.wav'), True, api_name='/transcribe'))"
+      - name: JavaScript tanpa token (library yang sama dengan halaman)
+        continue-on-error: true
+        run: |
+          cat > t.mjs <<'JS'
+          import { Client, handle_file } from "@gradio/client";
+          import { readFileSync } from "fs";
+          try {
+            const c = await Client.connect("BagasPtr/batak-toba-asr");
+            const blob = new Blob([readFileSync("tes.wav")], { type: "audio/wav" });
+            const r = await c.predict("/transcribe", [handle_file(blob), true]);
+            console.log("JS_HASIL", JSON.stringify(r.data));
+          } catch (e) {
+            console.log("JS_ERROR", e?.message, JSON.stringify(e, Object.getOwnPropertyNames(e || {})).slice(0, 2000));
+            process.exit(1);
+          }
+          JS
+          node t.mjs
