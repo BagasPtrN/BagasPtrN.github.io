@@ -148,4 +148,4 @@ with gr.Blocks(title="Pengenal Suara Batak Toba") as demo:
         transcribe, [audio_in, do_tr], [out_bt, out_id], api_name="transcribe"
     )
 
-demo.queue(default_concurrency_limit=1, max_size=64).launch()
+demo.queue(default_concurrency_limit=1, max_size=64).launch(show_error=True)
