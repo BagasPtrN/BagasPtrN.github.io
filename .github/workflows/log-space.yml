@@ -1,0 +1,23 @@
+name: Ambil log Space
+
+on:
+  workflow_dispatch:
+
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Status + log runtime
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          REPO=$(curl -s -H "Authorization: Bearer $HF_TOKEN" https://huggingface.co/api/whoami-v2 | python3 -c "import sys,json;print(json.load(sys.stdin)['name'])")/batak-toba-asr
+          curl -s -H "Authorization: Bearer $HF_TOKEN" https://huggingface.co/api/spaces/$REPO/runtime | python3 -c "import sys,json;d=json.load(sys.stdin);print('RUNTIME',d.get('stage'),d.get('hardware'),d.get('errorMessage'))"
+          timeout 15 curl -sN -H "Authorization: Bearer $HF_TOKEN" https://huggingface.co/api/spaces/$REPO/logs/run > run.log || true
+          python3 - <<'PY'
+          import json
+          for line in open("run.log", errors="ignore"):
+              if line.startswith("data:"):
+                  try: print("LOG", json.loads(line[5:]).get("data","").rstrip())
+                  except Exception: pass
+          PY
