@@ -79,7 +79,7 @@ def load_audio(path: str) -> np.ndarray:
     return audio
 
 
-@GPU(duration=20)
+@GPU(duration=10)
 def run_asr(audio: np.ndarray) -> str:
     inputs = processor(audio, sampling_rate=SR, return_tensors="pt")
     values = inputs["input_values"].to(DEVICE)
