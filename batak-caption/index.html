@@ -163,10 +163,51 @@
 </dialog>
 
 <script type="module">
-/* library Gradio dimuat saat dibutuhkan, supaya tombol tetap jalan walau sinyal lemah */
-const GRADIO_URL = "https://cdn.jsdelivr.net/npm/@gradio/client@1.14.2/dist/index.min.js";
-let gradio = null;
-async function lib() { return gradio || (gradio = await import(GRADIO_URL).catch((e) => { gradio = null; throw e; })); }
+/* Panggil API Gradio langsung dengan fetch biasa (tanpa cookie/credentials),
+   karena library @gradio/client ditolak CORS saat dipanggil dari github.io. */
+function spaceUrl(s) {
+  s = s.trim().replace(/\/+$/, "");
+  if (/^https?:\/\//.test(s)) return s;
+  const [user, name] = s.split("/");
+  return `https://${user.toLowerCase()}-${name.toLowerCase().replace(/[._]/g, "-")}.hf.space`;
+}
+function authHeaders() { return cfg.token ? { Authorization: "Bearer " + cfg.token } : {}; }
+
+class SpaceClient {
+  constructor(base) { this.base = base; }
+  async ping() {
+    const r = await fetch(this.base + "/gradio_api/info", { headers: authHeaders(), credentials: "omit" });
+    if (!r.ok) throw new Error("server membalas " + r.status);
+  }
+  async transcribe(blob, translate) {
+    const fd = new FormData();
+    fd.append("files", blob, "potongan.wav");
+    const up = await fetch(this.base + "/gradio_api/upload", { method: "POST", body: fd, headers: authHeaders(), credentials: "omit" });
+    if (!up.ok) throw new Error("upload gagal (" + up.status + ")");
+    const [path] = await up.json();
+    const call = await fetch(this.base + "/gradio_api/call/transcribe", {
+      method: "POST", credentials: "omit",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify({ data: [{ path, orig_name: "potongan.wav", meta: { _type: "gradio.FileData" } }, translate] }),
+    });
+    if (!call.ok) throw new Error("panggilan gagal (" + call.status + ")");
+    const { event_id } = await call.json();
+    const res = await fetch(this.base + "/gradio_api/call/transcribe/" + event_id, { headers: authHeaders(), credentials: "omit" });
+    const text = await res.text();
+    let ev = "", out = null, err = null;
+    for (const line of text.split("\n")) {
+      if (line.startsWith("event:")) ev = line.slice(6).trim();
+      else if (line.startsWith("data:")) {
+        const d = line.slice(5).trim();
+        if (ev === "complete") out = JSON.parse(d);
+        else if (ev === "error") err = d && d !== "null" ? d : "server error (mungkin jatah GPU habis)";
+      }
+    }
+    if (err) throw new Error(err);
+    if (!out) throw new Error("tidak ada hasil dari server");
+    return out;
+  }
+}
 
 const $ = (id) => document.getElementById(id);
 
@@ -225,8 +266,8 @@ async function connect() {
   if (connecting && clientKey === key) return connecting;
   clientKey = key;
   setStatus("Menghubungkan… (server tidur bisa butuh 1–3 menit)", "busy");
-  const opts = cfg.token ? { hf_token: cfg.token } : {};
-  connecting = lib().then(({ Client }) => Client.connect(cfg.space, opts))
+  const sc = new SpaceClient(spaceUrl(cfg.space));
+  connecting = sc.ping().then(() => sc)
     .then((c) => { client = c; setStatus(running ? "Mendengarkan" : "Siap", running ? "live" : "ok"); return c; })
     .catch((e) => { client = null; clientKey = ""; setStatus("Gagal terhubung ke server", "err"); console.error(e); throw e; })
     .finally(() => { connecting = null; });
@@ -347,9 +388,7 @@ async function pump() {
     const job = queue.shift(); updateLag();
     try {
       const c = await connect();
-      const { handle_file } = await lib();
-      const res = await c.predict("/transcribe", [handle_file(job.blob), cfg.translate]);
-      const [bt, id] = res.data || ["", ""];
+      const [bt, id] = await c.transcribe(job.blob, cfg.translate);
       if (!bt) { job.el.remove(); continue; }
       job.el.classList.remove("pending");
       job.el.querySelector(".bt").textContent = bt;
