@@ -95,6 +95,22 @@ section{scroll-margin-top:72px}
 .photos button:hover img{transform:scale(1.02)}
 .hint{margin-top:10px;font-size:.78rem}
 
+
+.screens{display:flex;gap:clamp(12px,1.6vw,20px);overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 14px;align-items:flex-end;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.screens button{flex:0 0 auto;width:auto;scroll-snap-align:start}
+.screens img{height:clamp(300px,36vw,500px);width:auto;max-width:none;border-radius:16px;filter:drop-shadow(0 10px 18px rgba(18,21,29,.14))}
+@media (min-width:1100px){.screens{flex-wrap:wrap;overflow:visible;justify-content:flex-start}.screens img{height:420px}}
+.posters{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1.4vw,18px)}
+.posters img{width:100%;height:auto;border-radius:10px;box-shadow:0 8px 20px rgba(18,21,29,.12)}
+.masonry{columns:4;column-gap:clamp(10px,1.4vw,18px)}
+.masonry button{break-inside:avoid;margin-bottom:clamp(10px,1.4vw,18px)}
+.masonry img{width:100%;height:auto;border-radius:10px}
+.lb-nav{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:0;background:#ffffff1f;color:#fff;font-size:26px;cursor:pointer}
+.lb-prev{left:12px}.lb-next{right:12px}
+.lb-count{position:fixed;top:20px;left:50%;transform:translateX(-50%);color:#ddd;font:600 .85rem var(--sans);letter-spacing:.1em}
+@media (max-width:900px){.posters{grid-template-columns:repeat(2,1fr)}.masonry{columns:2}}
+@media (max-width:600px){.screens{margin:0 calc(var(--pad) * -1);padding-left:var(--pad);padding-right:var(--pad);scroll-padding-left:var(--pad)}.lb-nav{width:40px;height:40px;font-size:22px}}
+
 /* contact */
 .contact{background:var(--ink);color:var(--bg);padding:clamp(72px,10vw,140px) 0}
 .contact h2{margin:0;font-family:var(--serif);font-variation-settings:"SOFT" 100;font-weight:800;font-size:clamp(56px,11vw,140px);line-height:.95;letter-spacing:-.02em}
@@ -204,7 +220,7 @@ dialog.lb::backdrop{background:rgba(10,12,18,.92)}
             </ul>
           </div>
         </div>
-        <div class="media photos reveal">
+        <div class="media photos reveal" data-gallery="photo">
           <button data-full="img/photo-corridor.webp" aria-label="Open photo: graduate walking in a corridor"><img src="img/photo-corridor.webp" width="1380" height="2100" loading="lazy" alt="Graduate walking in a corridor"></button>
           <button data-full="img/photo-balcony-portrait.webp" aria-label="Open photo: outdoor graduation portrait"><img src="img/photo-balcony-portrait.webp" width="1400" height="2096" loading="lazy" alt="Outdoor graduation portrait at dusk"></button>
           <button data-full="img/photo-family-group.webp" aria-label="Open photo: family group on stairs"><img src="img/photo-family-group.webp" width="1400" height="2100" loading="lazy" alt="Graduation family group on stairs"></button>
@@ -227,7 +243,7 @@ dialog.lb::backdrop{background:rgba(10,12,18,.92)}
             <a class="link" href="https://medium.com/@bagaspetran/ui-ux-case-study-nutriscan-app-simplifying-nutritional-information-access-63d8cdc3b097" target="_blank" rel="noopener">Read the case study on Medium ↗</a>
           </div>
         </div>
-        <div class="media collage reveal"><button data-full="img/nutriscan.webp" aria-label="Open NutriScan screens"><img src="img/nutriscan.webp" width="1973" height="904" loading="lazy" alt="NutriScan app screens: meal history, calorie ring and scan result"></button></div>
+        <div class="media screens reveal" data-gallery="nutriscan"><button data-full="img/nutriscan/01-splash.webp" aria-label="Open NutriScan: splash"><img src="img/nutriscan/01-splash.webp" width="242" height="525" loading="lazy" alt="NutriScan: splash"></button><button data-full="img/nutriscan/02-welcome.webp" aria-label="Open NutriScan: welcome"><img src="img/nutriscan/02-welcome.webp" width="242" height="525" loading="lazy" alt="NutriScan: welcome"></button><button data-full="img/nutriscan/03-login.webp" aria-label="Open NutriScan: login"><img src="img/nutriscan/03-login.webp" width="242" height="525" loading="lazy" alt="NutriScan: login"></button><button data-full="img/nutriscan/04-register.webp" aria-label="Open NutriScan: register"><img src="img/nutriscan/04-register.webp" width="242" height="525" loading="lazy" alt="NutriScan: register"></button><button data-full="img/nutriscan/05-home-mockup.webp" aria-label="Open NutriScan: home mockup"><img src="img/nutriscan/05-home-mockup.webp" width="432" height="540" loading="lazy" alt="NutriScan: home mockup"></button><button data-full="img/nutriscan/06-scan-mockup.webp" aria-label="Open NutriScan: scan mockup"><img src="img/nutriscan/06-scan-mockup.webp" width="262" height="540" loading="lazy" alt="NutriScan: scan mockup"></button><button data-full="img/nutriscan/07-daily-nutrition.webp" aria-label="Open NutriScan: daily nutrition"><img src="img/nutriscan/07-daily-nutrition.webp" width="242" height="525" loading="lazy" alt="NutriScan: daily nutrition"></button><button data-full="img/nutriscan/08-meal-history.webp" aria-label="Open NutriScan: meal history"><img src="img/nutriscan/08-meal-history.webp" width="242" height="525" loading="lazy" alt="NutriScan: meal history"></button><button data-full="img/nutriscan/09-history-list.webp" aria-label="Open NutriScan: history list"><img src="img/nutriscan/09-history-list.webp" width="242" height="525" loading="lazy" alt="NutriScan: history list"></button><button data-full="img/nutriscan/10-food-detail.webp" aria-label="Open NutriScan: food detail"><img src="img/nutriscan/10-food-detail.webp" width="242" height="525" loading="lazy" alt="NutriScan: food detail"></button><button data-full="img/nutriscan/11-scan-result.webp" aria-label="Open NutriScan: scan result"><img src="img/nutriscan/11-scan-result.webp" width="242" height="525" loading="lazy" alt="NutriScan: scan result"></button><button data-full="img/nutriscan/12-profile.webp" aria-label="Open NutriScan: profile"><img src="img/nutriscan/12-profile.webp" width="242" height="525" loading="lazy" alt="NutriScan: profile"></button></div><p class="hint muted">Swipe to see every screen · tap to enlarge.</p>
       </div>
     </section>
 
@@ -243,7 +259,7 @@ dialog.lb::backdrop{background:rgba(10,12,18,.92)}
             <p><b>The outcome</b>Staff could check in and out without instruction. The project taught me that accessibility is not a final polish step; it is the brief itself.</p>
           </div>
         </div>
-        <div class="media collage reveal"><button data-full="img/attendance.webp" aria-label="Open attendance app screens"><img src="img/attendance.webp" width="2049" height="884" loading="lazy" alt="Attendance app screens: login, history and check-in"></button></div>
+        <div class="media screens reveal" data-gallery="attendance"><button data-full="img/attendance/01-splash-mockup.webp" aria-label="Open Attendance app: splash mockup"><img src="img/attendance/01-splash-mockup.webp" width="262" height="540" loading="lazy" alt="Attendance app: splash mockup"></button><button data-full="img/attendance/02-login.webp" aria-label="Open Attendance app: login"><img src="img/attendance/02-login.webp" width="225" height="487" loading="lazy" alt="Attendance app: login"></button><button data-full="img/attendance/03-check-in-mockup.webp" aria-label="Open Attendance app: check in mockup"><img src="img/attendance/03-check-in-mockup.webp" width="432" height="540" loading="lazy" alt="Attendance app: check in mockup"></button><button data-full="img/attendance/04-attendance-today.webp" aria-label="Open Attendance app: attendance today"><img src="img/attendance/04-attendance-today.webp" width="225" height="487" loading="lazy" alt="Attendance app: attendance today"></button><button data-full="img/attendance/05-attendance-completed.webp" aria-label="Open Attendance app: attendance completed"><img src="img/attendance/05-attendance-completed.webp" width="225" height="487" loading="lazy" alt="Attendance app: attendance completed"></button><button data-full="img/attendance/06-history.webp" aria-label="Open Attendance app: history"><img src="img/attendance/06-history.webp" width="231" height="493" loading="lazy" alt="Attendance app: history"></button></div><p class="hint muted">Swipe to see every screen · tap to enlarge.</p>
       </div>
     </section>
 
@@ -259,7 +275,7 @@ dialog.lb::backdrop{background:rgba(10,12,18,.92)}
             <p><b>Explainability &amp; trust</b>Surfaced what an answer was based on, signalled uncertainty instead of hiding it, and kept the user in control with edit, retry and feedback actions.</p>
           </div>
         </div>
-        <div class="media collage reveal"><button data-full="img/socai.webp" aria-label="Open SocAI screens"><img src="img/socai.webp" width="2175" height="985" loading="lazy" alt="SocAI app screens: home, image craft, viral effects and gallery"></button></div>
+        <div class="media screens reveal" data-gallery="socai"><button data-full="img/socai/01-logo-mockup.webp" aria-label="Open SocAI: logo mockup"><img src="img/socai/01-logo-mockup.webp" width="366" height="436" loading="lazy" alt="SocAI: logo mockup"></button><button data-full="img/socai/02-home.webp" aria-label="Open SocAI: home"><img src="img/socai/02-home.webp" width="210" height="455" loading="lazy" alt="SocAI: home"></button><button data-full="img/socai/03-image-craft.webp" aria-label="Open SocAI: image craft"><img src="img/socai/03-image-craft.webp" width="210" height="455" loading="lazy" alt="SocAI: image craft"></button><button data-full="img/socai/04-go-viral.webp" aria-label="Open SocAI: go viral"><img src="img/socai/04-go-viral.webp" width="210" height="455" loading="lazy" alt="SocAI: go viral"></button><button data-full="img/socai/05-viral-effects.webp" aria-label="Open SocAI: viral effects"><img src="img/socai/05-viral-effects.webp" width="210" height="455" loading="lazy" alt="SocAI: viral effects"></button><button data-full="img/socai/06-create-photo-mockup.webp" aria-label="Open SocAI: create photo mockup"><img src="img/socai/06-create-photo-mockup.webp" width="249" height="436" loading="lazy" alt="SocAI: create photo mockup"></button></div><p class="hint muted">Swipe to see every screen · tap to enlarge.</p>
       </div>
     </section>
 
@@ -275,7 +291,7 @@ dialog.lb::backdrop{background:rgba(10,12,18,.92)}
             <p><b>What I learned</b>Sharpened my technical design skills and learned to work collaboratively within a creative team: managing multiple deadlines, adapting designs for different themes, and maintaining a consistent visual identity for an organization.</p>
           </div>
         </div>
-        <div class="media collage reveal"><button data-full="img/youth-commission.webp" aria-label="Open youth commission posters"><img src="img/youth-commission.webp" width="2347" height="989" loading="lazy" alt="Event posters designed for the youth commission"></button></div>
+        <div class="media posters reveal" data-gallery="youth"><button data-full="img/youth/01-christmas-fellowship.webp" aria-label="Open Youth commission poster: christmas fellowship"><img src="img/youth/01-christmas-fellowship.webp" width="432" height="432" loading="lazy" alt="Youth commission poster: christmas fellowship"></button><button data-full="img/youth/02-recap-november.webp" aria-label="Open Youth commission poster: recap november"><img src="img/youth/02-recap-november.webp" width="600" height="600" loading="lazy" alt="Youth commission poster: recap november"></button><button data-full="img/youth/03-getting-away-the-gerd.webp" aria-label="Open Youth commission poster: getting away the gerd"><img src="img/youth/03-getting-away-the-gerd.webp" width="432" height="432" loading="lazy" alt="Youth commission poster: getting away the gerd"></button><button data-full="img/youth/04-fellowship-movie-night.webp" aria-label="Open Youth commission poster: fellowship movie night"><img src="img/youth/04-fellowship-movie-night.webp" width="432" height="428" loading="lazy" alt="Youth commission poster: fellowship movie night"></button><button data-full="img/youth/05-future-in-faith.webp" aria-label="Open Youth commission poster: future in faith"><img src="img/youth/05-future-in-faith.webp" width="432" height="432" loading="lazy" alt="Youth commission poster: future in faith"></button><button data-full="img/youth/06-open-recruitment.webp" aria-label="Open Youth commission poster: open recruitment"><img src="img/youth/06-open-recruitment.webp" width="432" height="450" loading="lazy" alt="Youth commission poster: open recruitment"></button><button data-full="img/youth/07-youth-camp.webp" aria-label="Open Youth commission poster: youth camp"><img src="img/youth/07-youth-camp.webp" width="432" height="448" loading="lazy" alt="Youth commission poster: youth camp"></button><button data-full="img/youth/08-strawberry-generation.webp" aria-label="Open Youth commission poster: strawberry generation"><img src="img/youth/08-strawberry-generation.webp" width="432" height="432" loading="lazy" alt="Youth commission poster: strawberry generation"></button></div><p class="hint muted">Tap a design to enlarge.</p>
       </div>
     </section>
 
@@ -291,7 +307,7 @@ dialog.lb::backdrop{background:rgba(10,12,18,.92)}
             <p><b>What I learned</b>How to manage client communication, interpret a design brief, and deliver work that meets specific technical requirements for printing: the commercial side of design, and creating visuals that align with a client’s business goals.</p>
           </div>
         </div>
-        <div class="media collage reveal"><button data-full="img/freelance.webp" aria-label="Open freelance designs"><img src="img/freelance.webp" width="2261" height="960" loading="lazy" alt="Freelance banners, event posters and T-shirt designs"></button></div>
+        <div class="media masonry reveal" data-gallery="freelance"><button data-full="img/freelance/01-banner-ngeri-mace-squad.webp" aria-label="Open Freelance design: banner ngeri mace squad"><img src="img/freelance/01-banner-ngeri-mace-squad.webp" width="454" height="1210" loading="lazy" alt="Freelance design: banner ngeri mace squad"></button><button data-full="img/freelance/02-banner-unofficially-sarjana.webp" aria-label="Open Freelance design: banner unofficially sarjana"><img src="img/freelance/02-banner-unofficially-sarjana.webp" width="709" height="1890" loading="lazy" alt="Freelance design: banner unofficially sarjana"></button><button data-full="img/freelance/03-banner-ngalian-game.webp" aria-label="Open Freelance design: banner ngalian game"><img src="img/freelance/03-banner-ngalian-game.webp" width="567" height="1512" loading="lazy" alt="Freelance design: banner ngalian game"></button><button data-full="img/freelance/04-tshirt-mind-of-christ.webp" aria-label="Open Freelance design: tshirt mind of christ"><img src="img/freelance/04-tshirt-mind-of-christ.webp" width="271" height="307" loading="lazy" alt="Freelance design: tshirt mind of christ"></button><button data-full="img/freelance/05-tshirt-carry-your-cross.webp" aria-label="Open Freelance design: tshirt carry your cross"><img src="img/freelance/05-tshirt-carry-your-cross.webp" width="272" height="302" loading="lazy" alt="Freelance design: tshirt carry your cross"></button><button data-full="img/freelance/06-tshirt-seek-his-kingdom.webp" aria-label="Open Freelance design: tshirt seek his kingdom"><img src="img/freelance/06-tshirt-seek-his-kingdom.webp" width="273" height="301" loading="lazy" alt="Freelance design: tshirt seek his kingdom"></button><button data-full="img/freelance/07-jersey-seadoo-front-back.webp" aria-label="Open Freelance design: jersey seadoo front back"><img src="img/freelance/07-jersey-seadoo-front-back.webp" width="844" height="675" loading="lazy" alt="Freelance design: jersey seadoo front back"></button><button data-full="img/freelance/08-jersey-seadoo-sports.webp" aria-label="Open Freelance design: jersey seadoo sports"><img src="img/freelance/08-jersey-seadoo-sports.webp" width="675" height="844" loading="lazy" alt="Freelance design: jersey seadoo sports"></button></div><p class="hint muted">Tap a design to enlarge.</p>
       </div>
     </section>
   </div>
@@ -313,7 +329,7 @@ dialog.lb::backdrop{background:rgba(10,12,18,.92)}
 <footer><div class="wrap"><span>© 2026 Bagas Petra Natalegawa</span><a href="#top" style="text-decoration:none">Back to top ↑</a></div></footer>
 
 <dialog class="lb" id="lb" aria-label="Image viewer">
-  <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+  <button class="lb-close" id="lbClose" aria-label="Close">×</button><span class="lb-count" id="lbCount"></span><button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous">‹</button><button class="lb-nav lb-next" id="lbNext" aria-label="Next">›</button>
   <div class="lb-inner" id="lbInner"><img id="lbImg" alt=""></div>
 </dialog>
 
@@ -329,16 +345,22 @@ dialog.lb::backdrop{background:rgba(10,12,18,.92)}
     els.forEach(function(el){io.observe(el)});
   } else { els.forEach(function(el){el.classList.add('in')}); }
 
-  var lb=document.getElementById('lb'), img=document.getElementById('lbImg');
+  var lb=document.getElementById('lb'), img=document.getElementById('lbImg'), cnt=document.getElementById('lbCount'), list=[], idx=0;
+  function show(i){idx=(i+list.length)%list.length;var b=list[idx];img.src=b.dataset.full;img.alt=b.querySelector('img').alt;cnt.textContent=list.length>1?(idx+1)+' / '+list.length:'';document.getElementById('lbPrev').hidden=document.getElementById('lbNext').hidden=list.length<2}
   document.querySelectorAll('.media button').forEach(function(b){
     b.addEventListener('click',function(){
-      var i=b.querySelector('img'); img.src=b.dataset.full; img.alt=i.alt;
+      var g=b.closest('.media'); list=[].slice.call(g.querySelectorAll('button')); show(list.indexOf(b));
       if(lb.showModal){lb.showModal()} else {window.open(b.dataset.full,'_blank')}
     });
   });
   var close=function(){lb.close();img.removeAttribute('src')};
   document.getElementById('lbClose').addEventListener('click',close);
+  document.getElementById('lbPrev').addEventListener('click',function(){show(idx-1)});
+  document.getElementById('lbNext').addEventListener('click',function(){show(idx+1)});
   document.getElementById('lbInner').addEventListener('click',function(e){if(e.target.id==='lbInner')close()});
+  lb.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')show(idx-1);if(e.key==='ArrowRight')show(idx+1)});
+  var sx=null; lb.addEventListener('touchstart',function(e){sx=e.touches[0].clientX},{passive:true});
+  lb.addEventListener('touchend',function(e){if(sx===null)return;var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)show(idx+(dx<0?1:-1));sx=null});
 })();
 </script>
 </body>
