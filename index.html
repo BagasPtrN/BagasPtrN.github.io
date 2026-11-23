@@ -1,6 +1,345 @@
 <!DOCTYPE html>
-<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagasPtrN</title>
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0f0d0c;color:#f4efe9;font-family:system-ui,sans-serif}
-a{display:block;padding:16px 22px;border-radius:14px;background:#c8102e;color:#fff;text-decoration:none;font-weight:600}</style>
-</head><body><a href="batak-caption/">🎙️ Teks Langsung Batak Toba</a></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bagas Petra — UI/UX & Graphic Designer Portfolio</title>
+<meta name="description" content="Portfolio of Bagas Petra Natalegawa — UI/UX designer, graphic designer and photographer based in Yogyakarta.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bagas Petra’s Portfolio — UI/UX, Graphic Designer & Photographer">
+<meta property="og:description" content="Six projects across UI/UX, graphic design and graduation photography.">
+<meta property="og:image" content="https://bagasptrn.github.io/img/og-cover.jpg">
+<meta property="og:url" content="https://bagasptrn.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F6F0E4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght,SOFT@9..144,600..800,100&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F0E4; --bg-2:#EFE6D6; --ink:#12151d; --navy:#34548D; --navy-soft:#5f789f; --accent:#EF5026;
+  --line:rgba(52,84,141,.28);
+  --pad:clamp(20px,5vw,72px); --max:1180px;
+  --serif:"Fraunces",Georgia,serif; --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--navy);font-family:var(--sans);font-size:clamp(15px,1.05vw + 10px,17px);line-height:1.6}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+.label{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.muted{color:var(--navy-soft)}
+
+/* nav */
+header.nav{position:sticky;top:0;z-index:20;background:rgba(246,240,228,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .2s}
+header.nav.scrolled{border-bottom-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.brand{font-family:var(--serif);font-weight:700;color:var(--ink);text-decoration:none;font-size:1.15rem;font-variation-settings:"SOFT" 100;white-space:nowrap}
+.nav ul{list-style:none;display:flex;gap:clamp(14px,3vw,32px);margin:0;padding:0}
+.nav ul a{text-decoration:none;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.nav ul a:hover{color:var(--accent)}
+
+/* hero */
+.hero{min-height:calc(100svh - 60px);display:grid;align-content:center;padding:48px 0 64px;position:relative}
+.hero .year{position:absolute;top:28px;right:0;font-size:1.25rem;letter-spacing:.12em}
+.hero h1{margin:0;font-family:var(--serif);color:var(--ink);font-variation-settings:"SOFT" 100;line-height:.92;letter-spacing:-.02em}
+.hero h1 .small{display:block;font-size:clamp(28px,4.5vw,56px);font-weight:700}
+.hero h1 .big{display:block;font-size:clamp(72px,15vw,188px);font-weight:800}
+.hero .role{margin-top:clamp(28px,5vw,56px);color:var(--accent);font-size:clamp(15px,1.6vw,22px);letter-spacing:.14em;text-transform:uppercase}
+.hero .cta{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;font-weight:700;font-size:.85rem;letter-spacing:.06em;text-decoration:none;border:1.5px solid var(--navy);transition:background .2s,color .2s}
+.btn.solid{background:var(--navy);color:var(--bg)}
+.btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* about */
+section{scroll-margin-top:72px}
+.about{padding:clamp(56px,8vw,110px) 0;border-top:1px solid var(--line)}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:clamp(28px,4vw,48px)}
+.about-grid{display:grid;grid-template-columns:minmax(220px,.8fr) 1.2fr;gap:clamp(28px,5vw,72px);align-items:center}
+.portrait{background:linear-gradient(180deg,var(--bg-2),var(--bg));border-radius:28px;overflow:hidden;aspect-ratio:4/5;display:flex;align-items:flex-end;justify-content:center}
+.portrait img{width:92%;height:auto}
+.intro{font-size:clamp(18px,1.6vw + 8px,26px);line-height:1.5;color:var(--ink);margin:0 0 28px}
+.intro strong{color:var(--navy)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:18px 28px;margin:0}
+.facts dt{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--navy-soft)}
+.facts dd{margin:2px 0 0;color:var(--ink);font-weight:500}
+.facts a{text-decoration:none;border-bottom:1px solid var(--line)}
+.facts a:hover{color:var(--accent);border-color:var(--accent)}
+
+/* projects */
+.work{padding-bottom:40px}
+.project{padding:clamp(48px,7vw,96px) 0;border-top:1px solid var(--line)}
+.p-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:clamp(20px,3vw,32px)}
+.p-head h2{margin:0;font-family:var(--serif);font-variation-settings:"SOFT" 100;font-weight:700;color:var(--ink);font-size:clamp(26px,3.6vw,46px);line-height:1.08;letter-spacing:-.01em}
+.p-head h2 .yr{color:var(--accent);font-weight:600}
+.p-head .count{white-space:nowrap}
+.p-body{display:grid;grid-template-columns:240px 1fr;gap:clamp(20px,4vw,56px)}
+.meta{display:flex;flex-direction:column;gap:14px}
+.meta p{margin:0}
+.meta .chip{align-self:flex-start;padding:6px 12px;border-radius:999px;background:var(--bg-2);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.copy p{margin:0 0 16px;color:var(--ink)}
+.copy p.lead{font-size:clamp(17px,1.2vw + 9px,21px);line-height:1.5;color:var(--navy)}
+.copy b{color:var(--navy);letter-spacing:.08em;font-size:.78rem;text-transform:uppercase;margin-right:6px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.tools li{padding:8px 14px;border:1.5px solid var(--navy);border-radius:999px;font-size:.82rem;font-weight:700;color:var(--navy);background:#fff6}
+.tools li span{color:var(--navy-soft);font-weight:500;margin-right:6px;text-transform:uppercase;font-size:.7rem;letter-spacing:.12em}
+.link{display:inline-flex;gap:6px;align-items:center;font-weight:700;color:var(--navy);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:2px;margin-top:4px}
+.link:hover{color:var(--accent)}
+.media{margin-top:clamp(28px,4vw,48px)}
+.media button{all:unset;cursor:zoom-in;display:block;width:100%}
+.media button:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:12px}
+.collage img{width:100%;height:auto;border-radius:14px}
+.photos{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1.4vw,18px)}
+.photos img{width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border-radius:12px;transition:transform .35s ease}
+.photos button:hover img{transform:scale(1.02)}
+.hint{margin-top:10px;font-size:.78rem}
+
+/* contact */
+.contact{background:var(--ink);color:var(--bg);padding:clamp(72px,10vw,140px) 0}
+.contact h2{margin:0;font-family:var(--serif);font-variation-settings:"SOFT" 100;font-weight:800;font-size:clamp(56px,11vw,140px);line-height:.95;letter-spacing:-.02em}
+.contact p.sub{max-width:34ch;margin:20px 0 36px;font-size:clamp(18px,1.4vw + 8px,24px);letter-spacing:.04em;color:#e9e1d2}
+.contact .btn{border-color:var(--bg);color:var(--bg)}
+.contact .btn.solid{background:var(--accent);border-color:var(--accent);color:#fff}
+.contact .btn:hover{background:var(--bg);color:var(--ink);border-color:var(--bg)}
+.contact .row{display:flex;flex-wrap:wrap;gap:12px}
+footer{background:var(--ink);color:#bfb6a6;font-size:.8rem;padding:0 0 28px}
+footer .wrap{border-top:1px solid #ffffff22;padding-top:20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* lightbox */
+dialog.lb{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;width:100vw;height:100svh}
+dialog.lb::backdrop{background:rgba(10,12,18,.92)}
+.lb-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:56px 12px 24px}
+.lb img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px}
+.lb-close{position:fixed;top:12px;right:14px;width:44px;height:44px;border-radius:50%;border:0;background:#ffffff1f;color:#fff;font-size:26px;cursor:pointer}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+/* tablet */
+@media (max-width:900px){
+  .p-body{grid-template-columns:1fr}
+  .meta{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 16px}
+  .about-grid{grid-template-columns:1fr}
+  .portrait{max-width:380px;width:100%;margin:0 auto}
+}
+/* phone */
+@media (max-width:600px){
+  .nav ul{gap:14px}
+  .nav ul a{font-size:.7rem;letter-spacing:.1em}
+  .hero .year{top:12px}
+  .photos{grid-template-columns:repeat(2,1fr)}
+  .facts{grid-template-columns:1fr}
+  .p-head{flex-direction:column;gap:6px}
+  .collage{margin:0 calc(var(--pad) * -1)}
+  .collage img{border-radius:0}
+  .hint{padding:0 var(--pad)}
+  .btn{padding:12px 18px}
+}
+@media (max-width:360px){.brand{display:none}}
+</style>
+</head>
+<body>
+
+<header class="nav" id="top">
+  <div class="wrap">
+    <a class="brand" href="#top">Bagas Petra</a>
+    <nav aria-label="Main"><ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul></nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="hero" aria-label="Intro">
+      <span class="year">2026</span>
+      <h1><span class="small">Bagas Petra’s</span><span class="big">Portfolio</span></h1>
+      <p class="role">UI/UX, Graphic Designer &amp; Photographer</p>
+      <div class="cta">
+        <a class="btn solid" href="#work">View work ↓</a>
+        <a class="btn" href="Bagas-Petra-Portfolio-2026.pdf" download>Download PDF</a>
+      </div>
+    </section>
+  </div>
+
+  <section class="about" id="about">
+    <div class="wrap">
+      <div class="sec-head"><span class="label">Introduction</span><span class="label muted">About me</span></div>
+      <div class="about-grid">
+        <div class="portrait reveal"><img src="img/bagas.webp" width="849" height="1061" alt="Portrait of Bagas Petra Natalegawa"></div>
+        <div class="reveal">
+          <p class="intro">My journey started in IT and programming, but <strong>I found my passion in UI/UX</strong>, bridging the gap between technical logic and human-centered design. <strong>I love bringing ideas to life</strong>, whether by simplifying complex data into an elegant interface like my NutriScan app or through my <strong>three-year commitment</strong> to creating visual content for a youth commission.</p>
+          <dl class="facts">
+            <div><dt>Name</dt><dd>Bagas Petra Natalegawa</dd></div>
+            <div><dt>Education</dt><dd>Bachelor of Computer Science, UPN “Veteran” Yogyakarta</dd></div>
+            <div><dt>Email</dt><dd><a href="mailto:bagaspetran@gmail.com">bagaspetran@gmail.com</a></dd></div>
+            <div><dt>Phone</dt><dd><a href="tel:+62895605507665">+62 8956 0550 7665</a></dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="work" id="work">
+
+    <!-- 1 Photography -->
+    <section class="project" id="photography">
+      <div class="wrap">
+        <div class="p-head reveal"><h2>Graduation Photography <span class="yr">— 2026</span></h2><span class="label count">Project 1 of 6</span></div>
+        <div class="p-body reveal">
+          <div class="meta"><span class="chip">Freelance project</span><p><span class="label muted">My role</span><br><strong>Photographer &amp; Editor</strong></p></div>
+          <div class="copy">
+            <p class="lead">Graduation portrait sessions for students, couples and families, from single portraits to large family groups, delivered as fully edited, full-resolution photos.</p>
+            <p><b>What I did</b>Directed and shot the sessions, then built one colour grade from a reference mood and carried it across 60+ photos: darker, warmer backgrounds, subjects lifted forward, natural skin tones and clean subject edges.</p>
+            <p><b>The outcome</b>A consistent, recognisable look across every set, refined photo by photo (skin tone, white fabric, flash highlights, distractions in the frame) so each image holds up at full size.</p>
+            <ul class="tools" aria-label="Photography tools">
+              <li><span>Camera</span>Sony A7 Mark II (Full-Frame)</li>
+              <li><span>Lens</span>FE 85mm F1.4</li>
+              <li><span>Lens</span>FE 50mm F1.4</li>
+            </ul>
+          </div>
+        </div>
+        <div class="media photos reveal">
+          <button data-full="img/photo-corridor.webp" aria-label="Open photo: graduate walking in a corridor"><img src="img/photo-corridor.webp" width="1380" height="2100" loading="lazy" alt="Graduate walking in a corridor"></button>
+          <button data-full="img/photo-balcony-portrait.webp" aria-label="Open photo: outdoor graduation portrait"><img src="img/photo-balcony-portrait.webp" width="1400" height="2096" loading="lazy" alt="Outdoor graduation portrait at dusk"></button>
+          <button data-full="img/photo-family-group.webp" aria-label="Open photo: family group on stairs"><img src="img/photo-family-group.webp" width="1400" height="2100" loading="lazy" alt="Graduation family group on stairs"></button>
+          <button data-full="img/photo-terrace.webp" aria-label="Open photo: graduate on a terrace"><img src="img/photo-terrace.webp" width="1400" height="2100" loading="lazy" alt="Graduate on a terrace"></button>
+        </div>
+        <p class="hint muted">Tap a photo to view it larger.</p>
+      </div>
+    </section>
+
+    <!-- 2 NutriScan -->
+    <section class="project" id="nutriscan">
+      <div class="wrap">
+        <div class="p-head reveal"><h2>NutriScan App <span class="yr">— 2023</span></h2><span class="label count">Project 2 of 6</span></div>
+        <div class="p-body reveal">
+          <div class="meta"><span class="chip">Group project</span><p><span class="label muted">My role</span><br><strong>UI/UX Designer</strong></p></div>
+          <div class="copy">
+            <p class="lead">A mobile app that returns nutritional information from a single photo of a meal. The hard part was never the scan; it was making dense nutrition data readable in seconds.</p>
+            <p><b>What I did</b>Owned the end-to-end design at Bangkit Academy (Google, GoTo, Traveloka): a three-step flow, wireframes, the high-fidelity UI, and a tested interactive prototype.</p>
+            <p><b>The outcome</b>A calorie ring, macro breakdown and ingredient list, so a result reads at a glance and detail stays one tap away. Published as a case study on Medium.</p>
+            <a class="link" href="https://medium.com/@bagaspetran/ui-ux-case-study-nutriscan-app-simplifying-nutritional-information-access-63d8cdc3b097" target="_blank" rel="noopener">Read the case study on Medium ↗</a>
+          </div>
+        </div>
+        <div class="media collage reveal"><button data-full="img/nutriscan.webp" aria-label="Open NutriScan screens"><img src="img/nutriscan.webp" width="1973" height="904" loading="lazy" alt="NutriScan app screens: meal history, calorie ring and scan result"></button></div>
+      </div>
+    </section>
+
+    <!-- 3 Attendance -->
+    <section class="project" id="attendance">
+      <div class="wrap">
+        <div class="p-head reveal"><h2>Attendance App <span class="yr">— 2024</span></h2><span class="label count">Project 3 of 6</span></div>
+        <div class="p-body reveal">
+          <div class="meta"><span class="chip">Group project</span><p><span class="label muted">My role</span><br><strong>UI/UX Designer</strong></p></div>
+          <div class="copy">
+            <p class="lead">A location-based attendance app for office staff, designed specifically for adults aged 35–60 who are not comfortable with dense mobile interfaces.</p>
+            <p><b>What I did</b>Ran the research phase and built the personas, then designed a high-contrast, minimal UI: large type, one clear action per screen, a flat architecture.</p>
+            <p><b>The outcome</b>Staff could check in and out without instruction. The project taught me that accessibility is not a final polish step; it is the brief itself.</p>
+          </div>
+        </div>
+        <div class="media collage reveal"><button data-full="img/attendance.webp" aria-label="Open attendance app screens"><img src="img/attendance.webp" width="2049" height="884" loading="lazy" alt="Attendance app screens: login, history and check-in"></button></div>
+      </div>
+    </section>
+
+    <!-- 4 SocAI -->
+    <section class="project" id="socai">
+      <div class="wrap">
+        <div class="p-head reveal"><h2>SocAI Mobile App <span class="yr">— 2026</span></h2><span class="label count">Project 4 of 6</span></div>
+        <div class="p-body reveal">
+          <div class="meta"><span class="chip">Group project</span><p><span class="label muted">My role</span><br><strong>UI/UX Designer</strong></p></div>
+          <div class="copy">
+            <p class="lead">SocAI (socai.id) is an AI-powered social app where users interact with AI characters and viral-effect content on mobile, aimed at creators and casual users who want entertaining conversational AI experiences.</p>
+            <p><b>What I did</b>Ran the mobile app UI/UX review, audited screens and flows, documented usability and interaction issues with prioritised fixes, and mapped the end-to-end experience into a UI/UX flow; also designed the business decks (Acquisition Deck EN/ID, SocAI Deck 2026, About SocAI 2026) and refined the logo.</p>
+            <p><b>Explainability &amp; trust</b>Surfaced what an answer was based on, signalled uncertainty instead of hiding it, and kept the user in control with edit, retry and feedback actions.</p>
+          </div>
+        </div>
+        <div class="media collage reveal"><button data-full="img/socai.webp" aria-label="Open SocAI screens"><img src="img/socai.webp" width="2175" height="985" loading="lazy" alt="SocAI app screens: home, image craft, viral effects and gallery"></button></div>
+      </div>
+    </section>
+
+    <!-- 5 Youth Commission -->
+    <section class="project" id="youth-commission">
+      <div class="wrap">
+        <div class="p-head reveal"><h2>Youth Commission Graphic Design <span class="yr">— 2022–24</span></h2><span class="label count">Project 5 of 6</span></div>
+        <div class="p-body reveal">
+          <div class="meta"><span class="chip">Group project</span><p><span class="label muted">My role</span><br><strong>Graphic Designer</strong></p></div>
+          <div class="copy">
+            <p class="lead">Two years of work as a core member of the youth commission’s graphic design team, creating a wide range of visual materials for the community’s events and monthly publications.</p>
+            <p><b>My impact</b>Translating abstract themes and event concepts into engaging visual content such as posters and announcement cards. These designs helped increase awareness and participation in the community’s activities.</p>
+            <p><b>What I learned</b>Sharpened my technical design skills and learned to work collaboratively within a creative team: managing multiple deadlines, adapting designs for different themes, and maintaining a consistent visual identity for an organization.</p>
+          </div>
+        </div>
+        <div class="media collage reveal"><button data-full="img/youth-commission.webp" aria-label="Open youth commission posters"><img src="img/youth-commission.webp" width="2347" height="989" loading="lazy" alt="Event posters designed for the youth commission"></button></div>
+      </div>
+    </section>
+
+    <!-- 6 Freelance -->
+    <section class="project" id="freelance">
+      <div class="wrap">
+        <div class="p-head reveal"><h2>Freelance Graphic &amp; Merchandise Design <span class="yr">— 2022–present</span></h2><span class="label count">Project 6 of 6</span></div>
+        <div class="p-body reveal">
+          <div class="meta"><span class="chip">Freelance project</span><p><span class="label muted">My role</span><br><strong>Freelance Graphic Designer</strong></p></div>
+          <div class="copy">
+            <p class="lead">A collection of my paid freelance work for various clients, focusing on graphics for tangible products like event banners, T-shirt apparel and other merchandise.</p>
+            <p><b>My impact</b>Helping clients translate their vision into professional, print-ready designs for their brand or event, managing the process from initial concept discussions to delivering the final files for production.</p>
+            <p><b>What I learned</b>How to manage client communication, interpret a design brief, and deliver work that meets specific technical requirements for printing: the commercial side of design, and creating visuals that align with a client’s business goals.</p>
+          </div>
+        </div>
+        <div class="media collage reveal"><button data-full="img/freelance.webp" aria-label="Open freelance designs"><img src="img/freelance.webp" width="2261" height="960" loading="lazy" alt="Freelance banners, event posters and T-shirt designs"></button></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <span class="label" style="color:var(--accent)">2026</span>
+      <h2>Thank you,</h2>
+      <p class="sub">I would love to talk about how this way of working could fit your product team.</p>
+      <div class="row">
+        <a class="btn solid" href="mailto:bagaspetran@gmail.com">bagaspetran@gmail.com</a>
+        <a class="btn" href="https://linkedin.com/in/bagas-petra-n" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn" href="Bagas-Petra-Portfolio-2026.pdf" download>Download PDF</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Bagas Petra Natalegawa</span><a href="#top" style="text-decoration:none">Back to top ↑</a></div></footer>
+
+<dialog class="lb" id="lb" aria-label="Image viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+  <div class="lb-inner" id="lbInner"><img id="lbImg" alt=""></div>
+</dialog>
+
+<script>
+(function(){
+  var nav=document.querySelector('header.nav');
+  var onScroll=function(){nav.classList.toggle('scrolled',window.scrollY>8)};
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  var els=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){io.observe(el)});
+  } else { els.forEach(function(el){el.classList.add('in')}); }
+
+  var lb=document.getElementById('lb'), img=document.getElementById('lbImg');
+  document.querySelectorAll('.media button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var i=b.querySelector('img'); img.src=b.dataset.full; img.alt=i.alt;
+      if(lb.showModal){lb.showModal()} else {window.open(b.dataset.full,'_blank')}
+    });
+  });
+  var close=function(){lb.close();img.removeAttribute('src')};
+  document.getElementById('lbClose').addEventListener('click',close);
+  document.getElementById('lbInner').addEventListener('click',function(e){if(e.target.id==='lbInner')close()});
+})();
+</script>
+</body>
+</html>
